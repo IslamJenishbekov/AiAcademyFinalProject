@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Одобрение кредита</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        /* Стили для каждой группы полей */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block; /* Сделать label блочным элементом, чтобы input был под ним */
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="number"] {
+            width: calc(100% - 22px); /* Ширина с учетом padding и border */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .prediction-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        .prediction-result.approved {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .prediction-result.declined {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .prediction-result.error {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        /* Если вы хотите label и input на одной строке, можно использовать flexbox */
+        /* .form-row { display: flex; align-items: center; margin-bottom: 15px; } */
+        /* .form-row label { flex: 0 0 40%; margin-right: 10px; } */
+        /* .form-row input { flex: 1; } */
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Прогноз одобрения кредита</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {% load credit_app_extras %}
+            {% for feature in features %}
+                <div class="form-group">
+                    <label for="{{ feature }}">
+                        {{ feature_names_ru|get_item:feature }} (<span style="font-style: italic; color: #777;">{{ feature }}</span>):
+                    </label>
+                    <input type="number" id="{{ feature }}" name="{{ feature }}" step="0.01" value="0" required>
+                </div>
+            {% endfor %}
+            <button type="submit">Получить прогноз</button>
+        </form>
+
+        {% if prediction %}
+            <div class="prediction-result
+                {% if prediction == 'Одобрен' %}approved{% elif prediction == 'Отклонен' %}declined{% else %}error{% endif %}">
+                <p>Результат прогноза: <strong>{{ prediction }}</strong></p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
