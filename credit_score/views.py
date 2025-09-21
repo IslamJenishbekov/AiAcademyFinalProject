@@ -4,6 +4,7 @@ from django.conf import settings
 from catboost import CatBoostClassifier
 import pandas as pd
 
+# Определение пути к модели
 MODEL_PATH = os.path.join(settings.BASE_DIR, 'credit_score', 'ml_models', 'my_catboost_model.cbm')
 
 model = None
@@ -37,47 +38,59 @@ feature_names_ru = {
 
 def predict_credit_approval(request):
     prediction = None
-    print(f"DEBUG: Метод запроса: {request.method}")  # DEBUG
+    initial_data = {} # <-- Очень важный словарь для сохранения данных формы
 
+    # Отладочные сообщения
+    print(f"\n[DEBUG VIEWS] Запрос: {request.method} на {request.path}")
     if request.method == 'POST':
-        print("DEBUG: Получен POST-запрос.")  # DEBUG
+        print("[DEBUG VIEWS] Обработка POST-запроса.")
+        # Собираем данные из POST-запроса и сохраняем их для формы и для модели
+        for feature in selected_features:
+            value = request.POST.get(feature)
+            initial_data[feature] = value # <-- Сохраняем введенное значение (строка) для HTML-поля 'value'
+            print(f"[DEBUG VIEWS] Из POST: {feature} = '{value}'")
+
         if model:
-            print("DEBUG: Модель успешно загружена, пытаемся предсказать.")  # DEBUG
             try:
-                data = {}
+                data_for_model = {}
                 for feature in selected_features:
-                    value = request.POST.get(feature)
-                    print(f"DEBUG: Получено поле '{feature}': '{value}'")  # DEBUG
+                    value = initial_data[feature] # Берем уже сохраненное значение
                     if value is None or value == '':
-                        # Используем значение по умолчанию, если поле пустое или None
-                        data[feature] = 0.0
-                        print(f"DEBUG: Поле '{feature}' пустое или None, используем 0.0")  # DEBUG
+                        data_for_model[feature] = 0.0 # Для модели используем 0.0, если поле пустое
                     else:
-                        data[feature] = float(value)
+                        try:
+                            data_for_model[feature] = float(value) # Для модели преобразуем в float
+                        except ValueError:
+                            # Если преобразование в float не удалось, значит, пользователь ввел не число.
+                            # Мы уже ловим ValueError ниже, но можно здесь добавить более детальную обработку.
+                            raise ValueError(f"Некорректное числовое значение для поля '{feature_names_ru.get(feature, feature)}': '{value}'")
 
-                print(f"DEBUG: Обработанные данные для предсказания: {data}")  # DEBUG
-                df = pd.DataFrame([data], columns=selected_features)
-                print(f"DEBUG: DataFrame для предсказания:\n{df}")  # DEBUG
 
+                print(f"[DEBUG VIEWS] Данные для модели: {data_for_model}")
+                df = pd.DataFrame([data_for_model], columns=selected_features)
                 prediction_proba = model.predict_proba(df)[:, 1]
                 prediction = "Одобрен" if prediction_proba[0] >= 0.5 else "Отклонен"
-                print(f"DEBUG: Вероятность одобрения: {prediction_proba[0]}, Прогноз: {prediction}")  # DEBUG
+                print(f"[DEBUG VIEWS] Прогноз: {prediction}, Вероятность: {prediction_proba[0]}")
+
             except ValueError as ve:
-                prediction = f"Ошибка: Введены некорректные данные. Пожалуйста, введите числа. (Детали: {ve})"
-                print(f"ERROR: ValueError при обработке данных: {ve}")  # DEBUG
+                prediction = f"Ошибка: Введены некорректные данные. {ve}"
+                print(f"[DEBUG VIEWS ERROR] ValueError при обработке данных: {ve}")
             except Exception as e:
-                prediction = f"Произошла ошибка при предсказании: {e}"
-                print(f"ERROR: Неожиданная ошибка при предсказании: {e}")  # DEBUG
+                prediction = f"Произошла неожиданная ошибка при предсказании: {e}"
+                print(f"[DEBUG VIEWS ERROR] Неожиданная ошибка при предсказании: {e}")
         else:
             prediction = "Модель не загружена. Пожалуйста, проверьте логи сервера."
-            print("ERROR: Модель не загружена в predict_credit_approval.")  # DEBUG
-    else:
-        # Для GET-запроса или первого открытия страницы
+            print("[DEBUG VIEWS ERROR] Модель не загружена.")
+    else: # GET-запрос
+        print("[DEBUG VIEWS] Обработка GET-запроса (первое открытие или обновление).")
+        # При первом открытии initial_data будет пустым,
+        # что заполнит поля формы нулями благодаря |default:'0' в HTML.
         prediction = "Ожидаем ввода данных"
-        print("DEBUG: Получен GET-запрос, отображаем форму.")  # DEBUG
+
 
     return render(request, 'credit_score/predict.html', {
         'prediction': prediction,
         'features': selected_features,
         'feature_names_ru': feature_names_ru,
+        'initial_data': initial_data, # <-- Передаем initial_data в шаблон
     })
