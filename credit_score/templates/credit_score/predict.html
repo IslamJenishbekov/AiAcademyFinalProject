@@ -35,7 +35,8 @@
             font-weight: bold;
             color: #555;
         }
-        .form-group input[type="number"] {
+        .form-group input[type="number"],
+        .form-group select { /* Добавили стиль для select */
             width: calc(100% - 22px);
             padding: 10px;
             border: 1px solid #ddd;
@@ -52,6 +53,7 @@
             font-size: 18px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 10px; /* Добавим небольшой отступ */
         }
         button:hover {
             background-color: #0056b3;
@@ -78,6 +80,17 @@
             color: #856404;
             border: 1px solid #ffeeba;
         }
+        .client-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-left: 5px solid #007bff;
+            border-radius: 4px;
+        }
+        .client-info h3 {
+            margin-top: 0;
+            color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -86,15 +99,43 @@
 
         <form method="post">
             {% csrf_token %}
-            {% for feature in features %}
-                <div class="form-group">
-                    <label for="{{ feature }}">
-                        {{ feature_names_ru|get_item:feature }} (<span style="font-style: italic; color: #777;">{{ feature }}</span>):
-                    </label>
-                    <input type="number" id="{{ feature }}" name="{{ feature }}" step="0.01"
-                           value="{{ initial_data|get_item:feature|default:'0' }}" required>
+
+            <div class="form-group">
+                <label for="client_id">Выбрать существующего клиента:</label>
+                <select id="client_id" name="client_id" onchange="this.form.submit()">
+                    <option value="None">-- Ввести данные вручную --</option>
+                    {% for client in clients %}
+                        <option value="{{ client.id }}" {% if selected_client_id|floatformat:"0" == client.id|floatformat:"0" %}selected{% endif %}>
+                            {{ client.full_name }} (ID: {{ client.id }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% if client_info %}
+                <div class="client-info">
+                    <h3>Данные выбранного клиента ({{ client_info.full_name }}):</h3>
+                    <ul>
+                        <li>Возраст: {{ client_info.age }}</li>
+                        <li>Ежемесячный доход: {{ client_info.monthly_income }}</li>
+                        <li>Коэффициент долговой нагрузки: {{ client_info.debt_ratio }}</li>
+                        <li>Процент использования кредита: {{ client_info.utilization }}</li>
+                        <li>Количество просрочек (30-59 дней): {{ client_info.num_30_59_days_past_due }}</li>
+                        <li>Количество кредитных линий/займов: {{ client_info.num_credit_lines_loans }}</li>
+                    </ul>
                 </div>
-            {% endfor %}
+            {% else %}
+                {% for feature in features %}
+                    <div class="form-group">
+                        <label for="{{ feature }}">
+                            {{ feature_names_ru|get_item:feature }} (<span style="font-style: italic; color: #777;">{{ feature }}</span>):
+                        </label>
+                        <input type="number" id="{{ feature }}" name="{{ feature }}" step="0.01"
+                               value="{{ initial_data|get_item:feature|default:'0' }}" required>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <button type="submit">Получить прогноз</button>
         </form>
 
@@ -106,8 +147,8 @@
         {% endif %}
 
         {# Добавим блок для отображения введенных данных (только для отладки, можно потом убрать) #}
-        {% if initial_data and request.method == 'POST' %}
-            <h3>Отладочная информация (введенные данные):</h3>
+        {% if initial_data and request.method == 'POST' and not client_info %}
+            <h3>Отладочная информация (введенные данные вручную):</h3>
             <ul>
             {% for key, value in initial_data.items %}
                 <li>{{ feature_names_ru|get_item:key }}: <strong>{{ value|default:"(пусто)" }}</strong></li>
