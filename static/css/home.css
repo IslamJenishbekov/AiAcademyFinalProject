@@ -1,0 +1,97 @@
+/* static/css/home.css */
+
+/* Блок-приветствие (Hero) */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    margin: 20px 0 40px 0;
+    box-shadow: var(--shadow);
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Стилизация кнопки */
+.btn {
+    display: inline-block;
+    padding: 14px 30px;
+    border-radius: 50px; /* Полностью скругленные края */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-light-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-2px); /* Небольшой эффект "подъема" при наведении */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Секция с преимуществами */
+.features {
+    padding: 20px 0;
+}
+
+.features h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+    color: #343a40;
+}
+
+.feature-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 350px;
+    text-align: center;
+    border-top: 4px solid var(--primary-color); /* Цветная полоска сверху */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.card p {
+    color: #6c757d;
+    line-height: 1.6;
+}

@@ -1,76 +1,126 @@
+/* static/rag_chat/styles.css */
+:root {
+    --primary-color: #0056b3;
+    --primary-hover-color: #004494;
+    --background-color: #f0f2f5;
+    --text-color: #333;
+    --border-color: #ced4da;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-radius: 8px;
+    --user-message-bg: #e1ffc7;
+    --bot-message-bg: #f1f3f5;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
     margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-.chat-container {
-    width: 100%;
+.container-chat {
     max-width: 800px;
-    height: 90vh;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 90%;
+    margin: 20px auto;
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    min-height: 70vh; /* Минимальная высота для контейнера чата */
+}
+
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.chat-box {
+    flex-grow: 1; /* Позволяет блоку чата занимать доступное пространство */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    overflow-y: auto; /* Прокрутка для сообщений */
+    margin-bottom: 20px;
+    background-color: #ffffff;
     display: flex;
     flex-direction: column;
 }
 
-.chat-box {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    border-bottom: 1px solid #ddd;
-}
-
 .message {
-    margin-bottom: 15px;
     padding: 10px 15px;
+    margin-bottom: 10px;
     border-radius: 18px;
     max-width: 70%;
+    word-wrap: break-word;
     line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .user-message {
-    background-color: #007bff;
-    color: white;
-    align-self: flex-end;
-    margin-left: auto;
+    background-color: var(--user-message-bg);
+    align-self: flex-end; /* Сообщения пользователя справа */
+    border-bottom-right-radius: 4px; /* Немного сглаживаем угол */
 }
 
 .bot-message {
-    background-color: #e9ecef;
-    color: #333;
-    align-self: flex-start;
+    background-color: var(--bot-message-bg);
+    align-self: flex-start; /* Сообщения бота слева */
+    border-bottom-left-radius: 4px; /* Немного сглаживаем угол */
 }
 
-.chat-input {
+.chat-form {
     display: flex;
-    padding: 20px;
+    gap: 10px;
 }
 
-.chat-input input {
-    flex: 1;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    margin-right: 10px;
-    font-size: 16px;
+.chat-form .form-group {
+    flex-grow: 1;
+    display: flex;
+    gap: 10px;
 }
 
-.chat-input button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #007bff;
+.form-group input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 25px; /* Более округлые поля */
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+}
+
+button[type="submit"] {
+    padding: 12px 25px;
+    background-color: var(--primary-color);
     color: white;
-    border-radius: 20px;
+    border: none;
+    border-radius: 25px; /* Более округлые кнопки */
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
-.chat-input button:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-1px);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
 }

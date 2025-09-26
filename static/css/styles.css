@@ -1,0 +1,96 @@
+/* static/css/styles.css */
+
+/* Глобальные переменные для удобного управления цветами и шрифтами */
+:root {
+    --primary-color: #0056b3; /* Основной синий цвет банка */
+    --primary-hover-color: #004494;
+    --secondary-color: #f8f9fa; /* Светлый фон */
+    --text-color: #212529; /* Основной цвет текста */
+    --text-light-color: #ffffff;
+    --border-color: #dee2e6;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --border-radius: 8px;
+}
+
+/* Стили для всего тела страницы */
+body {
+    font-family: var(--font-family);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Страница занимает минимум всю высоту экрана */
+}
+
+/* Основной контейнер для контента */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Стилизация шапки (Header) */
+header {
+    background-color: var(--text-light-color);
+    box-shadow: var(--shadow);
+    padding: 1rem 0;
+    position: sticky; /* Шапка "прилипает" при прокрутке */
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-brand {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.navbar-nav {
+    list-style: none;
+    display: flex;
+    gap: 25px; /* Пространство между пунктами меню */
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-nav a:hover {
+    color: var(--primary-color);
+}
+
+/* Основной контент */
+main {
+    flex-grow: 1; /* Занимает все доступное пространство между шапкой и подвалом */
+    /* УБИРАЕМ display: flex и flex-direction: column отсюда */
+    /* display: flex; */
+    /* flex-direction: column; */
+}
+
+/* Стилизация подвала (Footer) */
+footer {
+    background-color: #343a40;
+    color: var(--text-light-color);
+    text-align: center;
+    padding: 25px 0;
+    margin-top: auto; /* Прижимает подвал к низу */
+}

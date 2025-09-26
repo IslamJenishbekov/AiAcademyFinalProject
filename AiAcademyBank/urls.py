@@ -6,6 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('credit_score/', include('credit_score.urls')),
     path('employees_rag/', include('employees_rag.urls')),
-path('', lambda request: redirect('credit_score:credit_application'))
+    path('', lambda request: redirect('credit_score:index'))
 ]
 

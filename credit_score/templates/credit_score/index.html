@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Добро пожаловать в My Bank{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Надежность и инновации в каждом решении</h1>
+    <p>Мы предлагаем полный спектр банковских услуг для частных и корпоративных клиентов.</p>
+    <a href="/employees_rag/" class="btn btn-primary">Задать вопрос консультанту</a>
+</div>
+
+<section class="features">
+    <h2>Наши преимущества</h2>
+    <div class="feature-cards">
+        <div class="card">
+            <h3>Высокие технологии</h3>
+            <p>Используем искусственный интеллект для улучшения вашего опыта.</p>
+        </div>
+        <div class="card">
+            <h3>Безопасность</h3>
+            <p>Ваши финансы под надежной защитой современных систем безопасности.</p>
+        </div>
+        <div class="card">
+            <h3>Индивидуальный подход</h3>
+            <p>Предлагаем персонализированные решения для ваших финансовых задач.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

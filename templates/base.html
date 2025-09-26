@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Bank{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    {# Блок для дополнительных, специфичных для страницы стилей #}
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a class="navbar-brand" href="/">My Bank</a>
+                <ul class="navbar-nav">
+                    <li><a href="/">Главная</a></li>
+                    <li><a href="/employees_rag/">Консультант</a></li>
+                    <li><a href="/credit_score/predict/">Оценка кредита</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2025 My Bank. Все права защищены.</p>
+        </div>
+    </footer>
+
+    {# Блок для JS-скриптов #}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

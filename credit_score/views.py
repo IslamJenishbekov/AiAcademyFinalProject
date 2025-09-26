@@ -143,3 +143,9 @@ def predict_credit_approval(request):
         'selected_client_id': selected_client_id, # Передаем ID выбранного клиента
         'client_info': client_info, # Передаем объект клиента, если он выбран
     })
+
+
+from django.shortcuts import render
+
+def index_view(request):
+    return render(request, 'credit_score/index.html')

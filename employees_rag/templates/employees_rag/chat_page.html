@@ -1,23 +1,28 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django Chat</title>
-    <link rel="stylesheet" href="{% static 'employees_rag/styles.css' %}">
-</head>
-<body>
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box">
-            <!-- Сообщения будут появляться здесь -->
+
+{% block title %}RAG Ассистент{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'employees_rag/styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-chat">
+    <h1>Чат с RAG Ассистентом</h1>
+
+    <div id="chat-box" class="chat-box">
+        <div class="message bot-message">
+            Привет! Я ваш RAG ассистент. Спросите меня о чем-нибудь.
         </div>
-        <form class="chat-input" id="chat-form">
-            {% csrf_token %}
-            <input type="text" id="user-input" placeholder="Введите ваше сообщение...">
-            <button type="submit">Отправить</button>
-        </form>
     </div>
-    <script src="{% static 'employees_rag/scripts.js' %}"></script>
-</body>
-</html>
+
+    <form id="chat-form" class="chat-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" id="user-input" name="user_input" placeholder="Введите ваше сообщение..." required>
+            <button type="submit">Отправить</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
