@@ -3,25 +3,22 @@ from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 from catboost import CatBoostClassifier
 import pandas as pd
-from .models import Client  # Импортируем вашу модель Client
+from .models import Client
 
-# Определение пути к модели
-MODEL_PATH = os.path.join(settings.BASE_DIR, 'credit_score', 'ml_models', 'my_catboost_model.cbm')
+
+MODEL_PATH = os.path.join(settings.BASE_DIR, 'credit_score', 'ml_models', 'my_catboost_model(1).cbm')
 
 model = None
 try:
     print(f"Попытка загрузить модель по пути: {MODEL_PATH}")
     loaded_model = CatBoostClassifier()
-    # Убедитесь, что вы загружаете модель с теми же параметрами, с которыми она была сохранена
-    # Если у вас есть какие-либо параметры, передайте их здесь, например:
-    # loaded_model = CatBoostClassifier(random_seed=42)
     loaded_model.load_model(MODEL_PATH)
     model = loaded_model
     print("Модель CatBoost успешно загружена.")
 except Exception as e:
     print(f"!!! ОШИБКА !!! При загрузке модели CatBoost: {e}")
 
-# Список признаков, используемых моделью CatBoost
+
 selected_features = [
     'Utilization',
     'age',
@@ -44,10 +41,10 @@ feature_names_ru = {
 def predict_credit_approval(request):
     prediction = None
     initial_data = {}
-    # Получаем всех клиентов для выпадающего списка
+
     clients = Client.objects.all().order_by('full_name')
     selected_client_id = None
-    client_info = None # Для хранения объекта клиента, если он выбран
+    client_info = None
 
     print(f"\n[DEBUG VIEWS] Запрос: {request.method} на {request.path}")
 
@@ -55,15 +52,13 @@ def predict_credit_approval(request):
         print("[DEBUG VIEWS] Обработка POST-запроса.")
         selected_client_id_str = request.POST.get('client_id')
 
-        # Если выбран постоянный клиент (ID не 'None' и не пустая строка)
+
         if selected_client_id_str and selected_client_id_str != 'None':
             try:
                 selected_client_id = int(selected_client_id_str)
                 print(f"[DEBUG VIEWS] Выбран постоянный клиент с ID: {selected_client_id}")
                 client = get_object_or_404(Client, pk=selected_client_id)
-                client_info = client # Сохраняем объект клиента для отображения
-
-                # Заполняем initial_data и data_for_model данными клиента
+                client_info = client
                 initial_data = {
                     'Utilization': client.utilization if client.utilization is not None else 0.0,
                     'age': client.age if client.age is not None else 0,
