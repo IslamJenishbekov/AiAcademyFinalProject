@@ -26,3 +26,8 @@
     </form>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+{# --- ЭТА СТРОКА СВЯЗЫВАЕТ HTML И JAVASCRIPT --- #}
+<script src="{% static 'employees_rag/scripts.js' %}"></script>
+{% endblock %}
