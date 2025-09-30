@@ -119,6 +119,7 @@ def predict_credit_approval(request):
                         try:
                             df = pd.DataFrame([data_for_model], columns=selected_features)
                             prediction_proba = model.predict_proba(df)[:, 1]
+                            print(f"Предикт:{prediction_proba}")
                             prediction = "Одобрен" if prediction_proba[0] <= 0.5 else "Отклонен"
                             print(f"[DEBUG VIEWS] Прогноз: {prediction}, Вероятность: {prediction_proba[0]:.4f}")
                         except Exception as e:
