@@ -7,12 +7,13 @@ def chat_page(request):
     return render(request, 'employees_rag/chat_page.html')
 
 def send_message(request):
+    print("HELLO")
     if request.method == 'POST':
         data = json.loads(request.body)
         user_message = data.get('message')
 
         # Получаем ответ от вашей логики
         bot_response = rag_logic.get_bot_response(user_message)
-
+        print(user_message, bot_response)
         return JsonResponse({'response': bot_response})
     return JsonResponse({'error': 'Invalid request'}, status=400)
