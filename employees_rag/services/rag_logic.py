@@ -9,8 +9,8 @@ from openai import OpenAI
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 index_path = 'employees_rag/data/index.faiss'
 chunks_path = 'employees_rag/data/chunks.pkl'
-embedder = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+embedder = SentenceTransformer("deepvk/USER-bge-m3")
+cross_encoder = CrossEncoder("DiTy/cross-encoder-russian-msmarco")
 
 with open(chunks_path, "rb") as f:
     chunks = pickle.load(f)
@@ -19,29 +19,41 @@ with open(chunks_path, "rb") as f:
 index = faiss.read_index(index_path)
 
 def get_bot_response(query, top_k=5):
-    print("START:")
     q_emb = embedder.encode([query])
     D, I = index.search(np.array(q_emb), k=10)
     candidates = [chunks[idx] for idx in I[0]]
 
-    # 2) CrossEncoder reranking
+    print("\n\nBiEncoder Results: ")
+    for i, text in enumerate(candidates):
+        print(f"{i+1} chunk: {text}")
+    print('\n\n')
     pairs = [(query, passage) for passage in candidates]
     scores = cross_encoder.predict(pairs)
     reranked = [c for _, c in sorted(zip(scores, candidates), key=lambda x: x[0], reverse=True)]
 
+    print("\n\nCrossEncoder Results: ")
+    for i, text in enumerate(reranked[:top_k]):
+        print(f"{i+1} chunk: {text}")
+    print('\n\n')
     # 3) Берем top_k документов
-    context = "\n\n".join(reranked[:top_k])
+    context = ""
+    for i, text in enumerate(reranked[:top_k]):
+        context += f"{i+1}-чанк: {text}"
 
     # 4) LLM (новый API)
     prompt = f"""
-    Ты — ассистент сотрудника банка. Используй контекст из внутренних документов для ответа.
+    Ты — ассистент сотрудника банка в системе RAG (Retrieval Augmented Generation) 
+    Отвечай строго по контексту. Если ответа нет — укажи это. 
+
+    Формат ответа:
+    1. Краткий и точный ответ (если есть в контексте).
+    2. Если ты не знаешь ответ можешь использовать фразу: "Извините, я не располагаю такой информацией."
+    3. Будь вежлив с клиентом, важно клиентоориентированность
 
     Вопрос: {query}
 
-    Контекст документов:
+    Контекст из {top_k} чанков:
     {context}
-
-    Ответи понятно и структурированно.
     """
 
     response = client.chat.completions.create(
